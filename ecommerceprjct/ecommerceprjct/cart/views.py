@@ -47,15 +47,16 @@ def cart_remove(request,product_id):
     cart=Cart.objects.get(cart_id=_cart_id(request))
     product=get_object_or_404(Product,id=product_id)
     cart_item=CartItem.objects.get(product=product,cart=cart)
-    if cart_item.quantity >1:
-        cart_item.save()
+    if cart_item.quantity > 1:
+        cart_item.delete()
     else:
         cart_item.delete()
     return redirect('cart:cart_detail')
 
 def full_remove(request,product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
-    product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
-    cart_item.delete()
+    product = get_object_or_404(Product,id=product_id)
+    cart_item = CartItem.objects.get(product=product,cart=cart)
+    cart_item.quantity += 1
+    cart_item.save()
     return redirect('cart:cart_detail')
